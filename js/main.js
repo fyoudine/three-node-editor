@@ -1,6 +1,6 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import { ACESFilmicToneMapping, Material, Mesh, MeshStandardMaterial, PerspectiveCamera, PMREMGenerator, Scene, SphereBufferGeometry, sRGBEncoding, WebGLRenderer } from "three";
+import { ACESFilmicToneMapping, Material, Mesh, MeshStandardMaterial, PerspectiveCamera, PMREMGenerator, Scene, SphereBufferGeometry, SpotLight, sRGBEncoding, WebGLRenderer } from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader';
 import { NodeEditor } from './editor/node-editor/NodeEditor';
@@ -25,19 +25,40 @@ const renderer = new WebGLRenderer({
 
 renderer.outputEncoding = sRGBEncoding
 renderer.toneMapping = ACESFilmicToneMapping
-renderer.toneMappingExposure = 4.0
+renderer.toneMappingExposure = 2.0
 
 renderer.setSize( width, height );
+
+/// control
 
 const controls = new OrbitControls( camera, renderer.domElement );
 controls.minDistance = 2;
 controls.maxDistance = 10;
+
+/// light
+
+const spotLight = new SpotLight( 0xffffff );
+spotLight.position.set( 100, 100, 100 );
+
+spotLight.castShadow = true;
+
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+
+spotLight.shadow.camera.near = 500;
+spotLight.shadow.camera.far = 4000;
+spotLight.shadow.camera.fov = 30;
+
+scene.add( spotLight );
 
 /// mesh 
 
 const geometry = new SphereBufferGeometry( 2, 50, 50 );
 const material = new MeshStandardMaterial( { color: 0x555555 } );
 const mesh = new Mesh( geometry, material );
+
+mesh.castShadow = true;
+mesh.receiveShadow = true;
 mesh.name = "sphere";
 scene.add( mesh );
 
