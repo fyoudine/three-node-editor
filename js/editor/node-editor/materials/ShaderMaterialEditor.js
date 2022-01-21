@@ -1,13 +1,13 @@
 import { ColorInput, SliderInput, LabelElement } from '../../libs/flow.js';
 import { BaseNode } from '../core/BaseNode.js';
-import { MeshStandardNodeMaterial } from '../../renderers/nodes/Nodes.js';
+import { ShaderNodeMaterial } from '../../renderers/nodes/Nodes.js';
 import * as THREE from 'three';
 
-export class StandardMaterialEditor extends BaseNode {
+export class ShaderMaterialEditor extends BaseNode {
 
 	constructor() {
 
-		const material = new MeshStandardNodeMaterial();
+		const material = new ShaderNodeMaterial();
 
 		super( 'Standard Material', 1, material );
 
@@ -15,8 +15,6 @@ export class StandardMaterialEditor extends BaseNode {
 
 		const color = new LabelElement( 'color' ).setInput( 3 );
 		const opacity = new LabelElement( 'opacity' ).setInput( 1 );
-		const metalness = new LabelElement( 'metalness' ).setInput( 1 );
-		const roughness = new LabelElement( 'roughness' ).setInput( 1 );
 		const displacement = new LabelElement( 'Displacement' ).setInput( 3 );
 
 		color.add( new ColorInput( material.color.getHex() ).onChange( ( input ) => {
@@ -33,36 +31,17 @@ export class StandardMaterialEditor extends BaseNode {
 
 		} ) );
 
-		metalness.add( new SliderInput( material.metalness, 0, 1 ).onChange( ( input ) => {
-
-			material.metalness = input.getValue();
-
-		} ) );
-
-		roughness.add( new SliderInput( material.roughness, 0, 1 ).onChange( ( input ) => {
-
-			material.roughness = input.getValue();
-
-		} ) );
 
 		color.onConnect( () => this.update(), true );
 		opacity.onConnect( () => this.update(), true );
-		metalness.onConnect( () => this.update(), true );
-		roughness.onConnect( () => this.update(), true );
-		displacement.onConnect(() => this.update(), true );
-
 		displacement.onConnect(() => this.update(), true );
 
 		this.add( color )
 			.add( opacity )
-			.add( metalness )
-			.add( roughness )
 			.add( displacement );
 
 		this.color = color;
 		this.opacity = opacity;
-		this.metalness = metalness;
-		this.roughness = roughness;
 		this.displacement = displacement;
 
 		this.material = material;
@@ -73,17 +52,13 @@ export class StandardMaterialEditor extends BaseNode {
 
 	update() {
 
-		const { material, color, opacity, roughness, metalness, displacement } = this;
+		const { material, color, opacity, displacement } = this;
 
 		color.setEnabledInputs( ! color.getLinkedObject() );
 		opacity.setEnabledInputs( ! opacity.getLinkedObject() );
-		roughness.setEnabledInputs( ! roughness.getLinkedObject() );
-		metalness.setEnabledInputs( ! metalness.getLinkedObject() );
 
 		material.colorNode = color.getLinkedObject();
 		material.opacityNode = opacity.getLinkedObject() || null;
-		material.metalnessNode = metalness.getLinkedObject();
-		material.roughnessNode = roughness.getLinkedObject();
 
 		material.positionNode = displacement.getLinkedObject() || null;
 

@@ -24,6 +24,7 @@ import { JoinEditor } from './utils/JoinEditor.js';
 import { CheckerEditor } from './procedural/CheckerEditor.js';
 import { MeshEditor } from './scene/MeshEditor.js';
 import { EventDispatcher } from 'three';
+import { ShaderMaterialEditor } from './materials/ShaderMaterialEditor.js';
 
 Styles.icons.unlink = 'ti ti-unlink';
 
@@ -136,7 +137,7 @@ export const NodeList = [
 			{
 				name: 'Normalize',
 				icon: 'fold',
-				nodeClass: OperatorEditor
+				nodeClass: NormalizeEditor
 			}
 		]
 	},
@@ -196,6 +197,11 @@ export const NodeList = [
 				name: 'Standard Material',
 				icon: 'circle',
 				nodeClass: StandardMaterialEditor
+			},
+			{
+				name: 'Shader Material',
+				icon: 'circle',
+				nodeClass: ShaderMaterialEditor
 			}
 		]
 	}
@@ -344,7 +350,7 @@ export class NodeEditor extends EventDispatcher {
 		menuButton.onClick( () => this.nodesContext.open() );
 		examplesButton.onClick( () => this.examplesContext.open() );
 
-		newButton.onClick( () => this.newProject() );
+		newButton.onClick( () => {if( confirm( "are you sure" ) )this.newProject()} );
 
 		openButton.onClick( () => {
 
